@@ -43,11 +43,12 @@ class Proceso:
 
     def crear_proceso(env, i):
         tiempo_crear = random.expovariate(1.0/intervalo)
-        Proceso('Proceso %d' % i, i, env)
+        Proceso('Proceso' % i, i, env)
         yield env.timeout(tiempo_crear)
 
     def procesar(self, env):
         self.tiempo_crear = env.now
+        print("Nuevo proceso a las ",self.tiempo_crear)
         with ram.get(self.memRequerida) as getRam:
             yield getRam
             siguiente = 0
@@ -77,7 +78,7 @@ class Main():
             env.process(crear_proceso(env, i))
         env.run()
         tiempoPromedio = (sum(tiempos)*1.0/(len(tiempos))
-        print ("Promedio: ", tiempoPromedio)
+        print("Promedio: ", tiempoPromedio)
 
 Main()
         
