@@ -24,6 +24,8 @@ cpu = simpy.Resource(env, capacity = capacidad_procesos)
 
 class SO:
     def __init__(self):
+        self.poop = 0
+        
 
 class Proceso:
     def __init__(self, nom, num, env, so):
@@ -39,12 +41,12 @@ class Proceso:
         self.sistema_operativo = so
         self.proceso = env.process(self.procesar(env, so))
 
-    def crear_proceso(env, sistema_operativo, i):
+    def crear_proceso(env, i):
         tiempo_crear = random.expovariate(1.0/intervalo)
-        Proceso('Proceso %d' % i, i, env, sistema_operativo)
+        Proceso('Proceso %d' % i, i, env)
         yield env.timeout(tiempo_crear)
 
-    def procesar(self, env, sistema_operativo):
+    def procesar(self, env):
         self.tiempo_crear = env.now
         with ram.get(self.memRequerida) as getRam:
             yield getRam
@@ -53,9 +55,9 @@ class Proceso:
                 with cpu.request() as req:
                     yield req
                     for i in range(instrucciones):
-                    if self.numInstrucciones > 0:
-                        self.numInstrucciones = self.numInstrucciones - 1
-                        siguiente = random.randint(0,1)
+                        if self.numInstrucciones > 0:
+                            self.numInstrucciones = self.numInstrucciones - 1
+                            siguiente = random.randint(0,1)
                     yield env.timeout(1)
             
                     if siguiente == 0:
@@ -68,8 +70,22 @@ class Proceso:
         self.timepo_total = int(self.tiempo_fin - self.tiempo_crear)
         tiempos.insert(self.numero, self.tiempo_total)
 
+class Main():
+    def _init_(self):
+        sistema_operativo = SO()
+        for i in range (cantidad_procesos):
+            env.process(crear_proceso(env, i))
+        env.run()
+        tiempoPromedio = (sum(tiempos)*1.0/(len(tiempos))
+        print ("Promedio: ", tiempoPromedio)
+
+Main()
+        
+
 
     
                 
         
     
+
+
